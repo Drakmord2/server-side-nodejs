@@ -3,7 +3,7 @@
 FROM node
 
 # Environment
-ENV APP_ROOT="/var/www"
+ENV APP_ROOT="/var/www/node"
 
 # Set the application root
 WORKDIR ${APP_ROOT}
@@ -11,7 +11,7 @@ WORKDIR ${APP_ROOT}
 # Install dependencies
 ADD package.json /tmp/package.json
 RUN cd /tmp && npm install
-RUN cp -a /tmp/node_modules /var/
+RUN cp -a /tmp/node_modules /var/www/
 
 # Listen to port
 EXPOSE 9090

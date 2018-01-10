@@ -3,9 +3,6 @@
   "name": "server-side-nodejs",
   "description": "Coursera's Server-side NodeJS course",
   "version": "0.1.0",
-  "scripts": {
-    "start": "node NodeJS/node-examples/index"
-  },
   "dependencies": {
     "express": "4.16.2",
     "mongoose": "5.0.0-rc2",

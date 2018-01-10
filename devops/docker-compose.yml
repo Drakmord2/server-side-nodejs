@@ -15,7 +15,7 @@ services:
     node:
         build: ../
         volumes:
-            - ../:/var/www/
+            - ../:/var/www/node
         ports:
             - 9090:9090
         networks:
