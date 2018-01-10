@@ -57,3 +57,8 @@ typings/
 # dotenv environment variables file
 .env
 
+# Docker
+app/Dockerfile
+app/devops/
+devops/
+
