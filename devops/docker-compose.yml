@@ -1,0 +1,28 @@
+
+version: '3'
+
+services:
+
+    mongo:
+        image: mongo
+        ports:
+            - 27017:27017
+        volumes:
+            - ./mongo/data:/data/db
+        networks:
+            - node-net
+
+    node:
+        build: ../
+        volumes:
+            - ../:/var/www/
+        ports:
+            - 9090:9090
+        networks:
+            - node-net
+        depends_on:
+            - mongo
+
+networks:
+    node-net:
+        driver: bridge

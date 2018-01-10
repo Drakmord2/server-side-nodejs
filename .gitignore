@@ -58,7 +58,4 @@ typings/
 .env
 
 # Docker
-app/Dockerfile
-app/devops/
-devops/
-
+devops/mongo
