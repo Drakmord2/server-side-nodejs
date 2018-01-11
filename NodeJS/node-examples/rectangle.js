@@ -1,21 +1,22 @@
 
 module.exports = rectangle;
 
-function rectangle (x, y, callback) {
+function rectangle (x, y) {
 
-    if (x <= 0 || y <= 0) {
+    let rectPromise = function (resolve, reject) {
+        if (x <= 0 || y <= 0) {
+            let err = new Error("Rectangle dimensions should be greater than zero:  l = " + x + ",  and b = " + y);
 
-        let err = new Error("Rectangle dimensions should be greater than zero:  l = " + x + ",  and b = " + y);
+            return setTimeout( reject(err), 1000);
+        }
 
-        setTimeout( () => callback(err, null), 1000);
-    }
-    else {
-
-        let prop = {
+        const prop = {
             perimeter:  () => (2*(x+y)),
             area:       () => (x*y)
         };
 
-        setTimeout( () => callback(null, prop), 2000);
-    }
+        return setTimeout( resolve(prop), 2000);
+    };
+
+    return new Promise(rectPromise);
 }
