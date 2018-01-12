@@ -1,15 +1,55 @@
 
-const http = require('http');
+const http  = require('http');
+const fs    = require('fs');
+const path  = require('path');
 
 const hostname  = 'node';
 const port      = 9090;
 
 const server = http.createServer((req, res) => {
-    console.log(req.headers);
+    console.log("Request for "+req.url+" by method: "+req.method);
 
-    res.statusCode = 200;
-    res.setHeader('Content-type', 'text/html');
-    res.end('<html><body><h1>Hello, World!</h1></body></html>');
+    if (req.method === 'GET') {
+        let fileUrl;
+        if (req.url === '/') {
+            fileUrl = './public/index.html';
+        }
+        else {
+            fileUrl = './public' + req.url;
+        }
+
+        let filePath = path.resolve(fileUrl);
+        const fileExt = path.extname(filePath);
+
+        if (fileExt === '.html') {
+            fs.exists(filePath, (exists) => {
+
+                if (!exists) {
+                    res.statusCode = 404;
+                    res.setHeader('Content-type', 'text/html');
+                    res.end('<html><body><h1>Error 404: '+req.url +' not found.</h1></body></html>');
+                    return;
+                }
+
+                res.statusCode = 200;
+                res.setHeader('Content-type', 'text/html');
+                fs.createReadStream(filePath).pipe(res);
+            });
+        }
+        else {
+            res.statusCode = 400;
+            res.setHeader('Content-type', 'text/html');
+            res.end('<html><body><h1>Error 404: '+req.url +' not HTML file.</h1></body></html>');
+            return;
+        }
+    }
+    else {
+        res.statusCode = 400;
+        res.setHeader('Content-type', 'text/html');
+        res.end('<html><body><h1>Error: '+req.method+' method not supported</h1></body></html>');
+        return;
+    }
+
 });
 
 server.listen(port, hostname, () => {
