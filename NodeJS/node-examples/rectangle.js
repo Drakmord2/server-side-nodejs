@@ -11,8 +11,8 @@ function rectangle (x, y) {
         }
 
         const prop = {
-            perimeter:  () => (2*(x+y)),
-            area:       () => (x*y)
+            perimeter:  () => 2*(x+y),
+            area:       () => x*y
         };
 
         return setTimeout( resolve(prop), 2000);
