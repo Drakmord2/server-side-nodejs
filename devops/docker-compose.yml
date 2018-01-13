@@ -17,7 +17,7 @@ services:
         volumes:
             - ../:/var/www/node
         ports:
-            - 9090:9090
+            - 3000:3000
         networks:
             - node-net
         depends_on:

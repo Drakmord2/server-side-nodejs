@@ -14,7 +14,7 @@ RUN cd /tmp && npm install
 RUN cp -a /tmp/node_modules /var/www/
 
 # Listen to port
-EXPOSE 9090
+EXPOSE 3000
 
 # Setup application
 COPY ./devops/start.sh /opt/start.sh
