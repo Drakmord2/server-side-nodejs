@@ -8,6 +8,9 @@ ENV APP_ROOT="/var/www/node"
 # Set the application root
 WORKDIR ${APP_ROOT}
 
+# Install Express Generator
+RUN npm install -g express-generator
+
 # Install dependencies
 ADD package.json /tmp/package.json
 RUN cd /tmp && npm install
