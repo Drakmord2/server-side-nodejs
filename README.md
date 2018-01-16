@@ -12,9 +12,10 @@ https://www.coursera.org/learn/server-side-nodejs
 
 **Week 2**
 - conFusionServer (Express Generator)
+- node-mongo      (MongoDB server)
 
 ## Docker
-A Docker development environment with Node.js, MongoDb and all necessary Node modules is available.
+A Docker development environment with Node.js, MongoDB and all necessary Node modules is available.
 
 You can set it up by executing:
 
@@ -23,10 +24,14 @@ $ cd devops/
 $ docker-compose up --build
 ```
 
-To enter the Node container use:
+To enter the containers use:
 
 ```bash
 $ docker exec -it devops_node_1 bash
+```
+and
+```bash
+$ docker exec -it devops_mongo_1 bash
 ```
 
 **Network**
