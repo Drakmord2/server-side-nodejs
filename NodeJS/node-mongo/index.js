@@ -6,34 +6,45 @@ const dbOper        = require('./operations');
 const url       = 'mongodb://mongo:27017';
 const dbName    = 'conFusion';
 
-MongoClient.connect(url, (err, client) => {
-    assert.equal(err, null);
+MongoClient.connect(url)
+    .then( (client) => {
+        console.log('\n- Connected correctly to server\n');
 
-    console.log('\n- Connected correctly to server\n');
+        const db            = client.db(dbName);
+        const collection    = "dishes";
 
-    const db            = client.db(dbName);
-    const collection    = "dishes";
+        const document = {name:"asd", description:"dsa"};
 
-    dbOper.insertDocument(db, {name:"asd", description:"dsa"}, collection, (result) => {
-        console.log('\n- Insert document: ', result.ops);
+        dbOper.insertDocument(db, document, collection)
+            .then( (result) => {
+                console.log('- Inserted document: \n', result.ops);
 
-        dbOper.findDocuments(db, collection, (docs) => {
-            console.log('\n- Found documents: ', docs);
+                return dbOper.findDocuments(db, collection);
+            })
+            .then( (docs) => {
+                console.log('\n- Found documents: \n', docs);
 
-            dbOper.updateDocument(db, {name: "asd"}, {description:"123"}, collection, (result) => {
-                console.log('\n- Updated document: ', result.result);
+                const findBy    = {name: "asd"};
+                const update    = {description:"123"};
 
-                dbOper.findDocuments(db, collection, (docs) => {
-                    console.log('\n- Found documents: ', docs);
+                return dbOper.updateDocument(db, findBy, update, collection);
+            })
+            .then( (result) => {
+                console.log('\n- Updated document: \n', result.result);
 
-                    db.dropCollection(collection, (result) => {
-                        console.log('\n- Dropped collection\n');
+                return dbOper.findDocuments(db, collection);
+            })
+            .then( (docs) => {
+                console.log('\n- Found documents: \n', docs);
 
-                        client.close();
-                    });
-                });
-            });
-        });
-    });
+                return db.dropCollection(collection);
+            })
+            .then( (result) => {
+                console.log('\n- Dropped collection\n');
 
-});
+                return client.close();
+            })
+            .catch(console.log);
+
+    })
+    .catch(console.log);
