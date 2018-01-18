@@ -18,13 +18,29 @@ connect.then((conn) => {
             description: "Cheese and Pepperoni"
         }
     )
-    .then((result) => {
-        console.log('- Inserted dish:\n', result);
+    .then((dish) => {
+        console.log('- Inserted dish:\n', dish);
 
-        return Dishes.find({}).exec();
+        const fields = {description: "Updated"};
+        const opts   = {new: true};
+
+        return Dishes.findByIdAndUpdate(dish._id, {$set: fields}, opts).exec();
     })
-    .then((dishes) => {
-        console.log('\n- Found dishes:\n', dishes);
+    .then((dish) => {
+        console.log('\n- Updated dish:\n', dish);
+
+        const comment = {
+            rating:     5,
+            comment:    "Really good",
+            author:     "Me"
+        };
+
+        dish.comments.push(comment);
+
+        return dish.save();
+    })
+    .then((dish) => {
+        console.log('\n- Inserted comment in dish:\n', dish);
 
         return db.collection('dishes').drop();
     })
