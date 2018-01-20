@@ -2,17 +2,22 @@
 {
   "name": "server-side-nodejs",
   "description": "Coursera's Server-side NodeJS course",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "dependencies": {
     "express": "4.16.2",
     "mongodb": "3.0.1",
     "mongoose": "5.0.0-rc2",
     "bluebird": "3.5.1",
+    "mongoose-currency": "0.2.0",
     "passport": "0.4.0",
     "loopback-cli": "4.1.0",
     "morgan": "1.9.0",
     "body-parser": "1.18.2",
-    "assert": "1.4.1"
+    "assert": "1.4.1",
+    "cookie-parser": "1.4.3",
+    "debug": "2.6.9",
+    "jade": "1.11.0",
+    "serve-favicon": "2.4.5"
   },
   "license": "GPL-3.0",
   "author": "Rubens Carneiro",
