@@ -11,7 +11,7 @@ https://www.coursera.org/learn/server-side-nodejs
 - node-express  (Express.js server)
 
 **Week 2**
-- conFusionServer (Express Generator)
+- conFusionServer (REST API)
 - node-mongo      (MongoDB server)
 - node-mongoose   (Mongoose)
 
