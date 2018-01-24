@@ -15,6 +15,9 @@ https://www.coursera.org/learn/server-side-nodejs
 - node-mongo      (MongoDB server)
 - node-mongoose   (Mongoose)
 
+**Week 3**
+- conFusionServer (Authentication)
+
 ## Docker
 A Docker development environment with Node.js, MongoDB and all necessary Node modules is available.
 

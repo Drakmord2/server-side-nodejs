@@ -1,32 +1,42 @@
 
-function auth(req, res, next) {
-    console.log(req.headers);
+// Authentication Middleware
 
-    const authHeader = req.headers.authorization;
+function auth (req, res, next) {
 
-    if (! authHeader) {
-        const err = new Error('You are not authenticated!');
+    if (! req.signedCookies.user) {
+        const authHeader = req.headers.authorization;
 
-        res.statusCode = 401;
-        res.setHeader('WWW-Authenticate', 'Basic');
+        if (! authHeader) {
+            return unauth(req, res, next);
+        }
 
-        return next(err);
+        const auth = new Buffer(authHeader.split(' ')[1], 'base64').toString();
+        const user = auth.split(':')[0];
+        const pass = auth.split(':')[1];
+
+        if (user === 'admin' && pass === 'password') {
+            res.cookie('user', 'admin', {signed: true});
+
+            return next();
+        }
+
+        return unauth(req, res, next);
     }
 
-    const auth = new Buffer(authHeader.split(' ')[1], 'base64').toString();
-    const user = auth.split(':')[0];
-    const pass = auth.split(':')[1];
-
-    if (user === 'admin' && pass === 'password') {
+    if (req.signedCookies.user === 'admin') {
         return next();
     }
 
-    const err = new Error('Wrong credentials!');
+    return unauth(req, res, next);
+}
 
-    res.statusCode = 401;
+function unauth (req, res, next) {
+    const err   = new Error('Not authenticated!');
+    err.status  = 401;
+
     res.setHeader('WWW-Authenticate', 'Basic');
 
-    return next(err);
+    next(err);
 }
 
 module.exports = auth;

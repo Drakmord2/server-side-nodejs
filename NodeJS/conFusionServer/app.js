@@ -45,7 +45,9 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+
+const key = '12345-43215-51423-12345-09683';
+app.use(cookieParser(key));
 
 app.use(auth);
 
