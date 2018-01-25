@@ -1,29 +1,27 @@
 
 // Authentication Middleware
 
-function auth (req, res, next) {
+let passthrough = [];
+
+function auth (options) {
+    if (options !== null) {
+        passthrough = options.passthrough;
+    }
+
+    return middleware;
+}
+
+function middleware (req, res, next) {
+
+    if ( inArray(req.url, passthrough) ) {
+        return next();
+    }
 
     if (! req.session.user) {
-        const authHeader = req.headers.authorization;
-
-        if (! authHeader) {
-            return unauth(req, res, next);
-        }
-
-        const auth = new Buffer(authHeader.split(' ')[1], 'base64').toString();
-        const user = auth.split(':')[0];
-        const pass = auth.split(':')[1];
-
-        if (user === 'admin' && pass === 'password') {
-            req.session.user = 'admin';
-
-            return next();
-        }
-
         return unauth(req, res, next);
     }
 
-    if (req.session.user === 'admin') {
+    if (req.session.user === 'authenticated') {
         return next();
     }
 
@@ -34,9 +32,14 @@ function unauth (req, res, next) {
     const err   = new Error('Not authenticated!');
     err.status  = 401;
 
-    res.setHeader('WWW-Authenticate', 'Basic');
-
     next(err);
+}
+
+function inArray(needle, haystack) {
+    const index = haystack.indexOf(needle);
+    const bool  = index > -1;
+
+    return bool;
 }
 
 module.exports = auth;

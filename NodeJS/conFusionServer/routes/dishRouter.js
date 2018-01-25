@@ -2,11 +2,12 @@
 // Modules
 const express       = require('express');
 const bodyParser    = require('body-parser');
-const dishRouter    = express.Router();
 
-// Models
+// Model
 const Dishes = require('../models/dishes');
 
+// Router
+const dishRouter = express.Router();
 dishRouter.use(bodyParser.json());
 
 // Routes

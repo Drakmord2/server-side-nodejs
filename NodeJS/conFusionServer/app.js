@@ -7,11 +7,11 @@ const logger        = require('morgan');
 const bodyParser    = require('body-parser');
 const session       = require('express-session');
 const FileStore     = require('session-file-store')(session);
-const auth          = require('./middlewares/auth');
+const Auth          = require('./middlewares/auth');
 
 // Routers
 const index         = require('./routes/index');
-const users         = require('./routes/users');
+const users         = require('./routes/userRouter');
 const dishRouter    = require('./routes/dishRouter');
 const promoRouter   = require('./routes/promoRouter');
 const leaderRouter  = require('./routes/leaderRouter');
@@ -46,19 +46,22 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, 'public')));
 
 const key = '12345-43215-51423-12345-09683';
-const sessionopts = {
+const sessionOpts = {
     name: 'session-id',
     secret: key,
     saveUninitialized: false,
     resave: false,
     store: new FileStore()
 };
-app.use(session(sessionopts));
-app.use(auth);
+app.use(session(sessionOpts));
 
-app.use(express.static(path.join(__dirname, 'public')));
+const authOpts = {
+    passthrough: [ '/users/login', '/users/signup', '/' ]
+};
+app.use(Auth(authOpts));
 
 // Mount routes
 app.use('/',            index);

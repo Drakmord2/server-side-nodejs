@@ -60,3 +60,5 @@ typings/
 # Docker
 devops/mongo
 assignment-*/
+
+bin/sessions/
