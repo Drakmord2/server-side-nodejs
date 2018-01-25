@@ -1,12 +1,13 @@
 
 // Modules
-const express         = require('express');
-const path            = require('path');
-const favicon         = require('serve-favicon');
-const logger          = require('morgan');
-const cookieParser    = require('cookie-parser');
-const bodyParser      = require('body-parser');
-const auth            = require('./auth');
+const express       = require('express');
+const path          = require('path');
+const favicon       = require('serve-favicon');
+const logger        = require('morgan');
+const bodyParser    = require('body-parser');
+const session       = require('express-session');
+const FileStore     = require('session-file-store')(session);
+const auth          = require('./middlewares/auth');
 
 // Routers
 const index         = require('./routes/index');
@@ -47,8 +48,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 const key = '12345-43215-51423-12345-09683';
-app.use(cookieParser(key));
-
+const sessionopts = {
+    name: 'session-id',
+    secret: key,
+    saveUninitialized: false,
+    resave: false,
+    store: new FileStore()
+};
+app.use(session(sessionopts));
 app.use(auth);
 
 app.use(express.static(path.join(__dirname, 'public')));

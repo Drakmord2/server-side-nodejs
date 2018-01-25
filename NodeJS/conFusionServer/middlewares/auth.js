@@ -3,7 +3,7 @@
 
 function auth (req, res, next) {
 
-    if (! req.signedCookies.user) {
+    if (! req.session.user) {
         const authHeader = req.headers.authorization;
 
         if (! authHeader) {
@@ -15,7 +15,7 @@ function auth (req, res, next) {
         const pass = auth.split(':')[1];
 
         if (user === 'admin' && pass === 'password') {
-            res.cookie('user', 'admin', {signed: true});
+            req.session.user = 'admin';
 
             return next();
         }
@@ -23,7 +23,7 @@ function auth (req, res, next) {
         return unauth(req, res, next);
     }
 
-    if (req.signedCookies.user === 'admin') {
+    if (req.session.user === 'admin') {
         return next();
     }
 
