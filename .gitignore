@@ -61,4 +61,4 @@ typings/
 devops/mongo
 assignment-*/
 
-bin/sessions/
+sessions/

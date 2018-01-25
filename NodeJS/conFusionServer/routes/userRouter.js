@@ -19,7 +19,7 @@ UserRouter.route('/signup')
             .then((user) => {
                 if (user !== null) {
                     const msg = `User ( ${newUsername.username} ) already exists`;
-                    return unauth(msg, req, res, next);
+                    return unauth(msg, next);
                 }
 
                 return User.create({
@@ -29,11 +29,12 @@ UserRouter.route('/signup')
 
             }, (err) => next(err))
             .then((user) => {
-                res.statusCode = 200;
-                res.setHeader('Content-type', 'application/json');
+                if (user) {
+                    res.statusCode = 200;
+                    res.setHeader('Content-type', 'application/json');
 
-                return res.json({status: "Registration Successful", user: user});
-
+                    return res.json({status: "Registration Successful", user: user});
+                }
             }, (err) => next(err))
             .catch((err) => next(err));
     });
@@ -48,7 +49,7 @@ UserRouter.route('/login')
                 .then((user) => {
                     if (user === null) {
                         const msg = 'Wrong username or password.';
-                        return unauth(msg, req, res, next);
+                        return unauth(msg, next);
                     }
 
                     req.session.user = 'authenticated';
@@ -78,10 +79,10 @@ UserRouter.route('/logout')
         }
 
         const msg = 'User not logged in';
-        return unauth(msg, req, res, next);
+        return unauth(msg, next);
     });
 
-function unauth (msg, req, res, next) {
+function unauth (msg, next) {
     const err   = new Error(msg);
     err.status  = 401;
 
