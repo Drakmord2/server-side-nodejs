@@ -1,5 +1,12 @@
 
 // Authentication Middleware
+const passport      = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const User          = require('../models/users');
+
+exports.local = passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 let passthrough = [];
 
@@ -17,11 +24,7 @@ function middleware (req, res, next) {
         return next();
     }
 
-    if (! req.session.user) {
-        return unauth(req, res, next);
-    }
-
-    if (req.session.user === 'authenticated') {
+    if (req.user) {
         return next();
     }
 
@@ -32,7 +35,7 @@ function unauth (req, res, next) {
     const err   = new Error('Not authenticated!');
     err.status  = 401;
 
-    next(err);
+    return next(err);
 }
 
 function inArray(needle, haystack) {

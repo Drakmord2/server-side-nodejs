@@ -8,6 +8,7 @@ const bodyParser    = require('body-parser');
 const session       = require('express-session');
 const FileStore     = require('session-file-store')(session);
 const Auth          = require('./middlewares/auth');
+const passport      = require('passport');
 
 // Routers
 const index         = require('./routes/index');
@@ -57,6 +58,9 @@ const sessionOpts = {
     store: new FileStore()
 };
 app.use(session(sessionOpts));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 const authOpts = {
     passthrough: [ '/users/login', '/users/signup', '/' ]
