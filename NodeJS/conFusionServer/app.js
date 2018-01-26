@@ -6,9 +6,11 @@ const favicon       = require('serve-favicon');
 const logger        = require('morgan');
 const bodyParser    = require('body-parser');
 const session       = require('express-session');
-const FileStore     = require('session-file-store')(session);
-const Auth          = require('./middlewares/auth');
 const passport      = require('passport');
+const authenticate  = require('./middlewares/authenticate');
+
+// Global Settings
+const config = require('./config');
 
 // Routers
 const index         = require('./routes/index');
@@ -20,8 +22,8 @@ const leaderRouter  = require('./routes/leaderRouter');
 // Mongoose Settings
 const mongoose      = require('mongoose');
 mongoose.Promise    = require('bluebird');
-const url           = 'mongodb://mongo:27017/conFusion';
-const options       = {};
+const url           = config.mongoUrl;
+const options       = config.mongoOpts;
 const conn          = mongoose.connection;
 
 conn.once('open', () => {
@@ -43,31 +45,16 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 // App Middlewares
-app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use( favicon( path.join(__dirname, 'public', 'favicon.ico')));
+app.use( logger('dev'));
+app.use( bodyParser.json());
+app.use( bodyParser.urlencoded({ extended: false }));
+app.use( express.static( path.join(__dirname, 'public')));
 
-const key = '12345-43215-51423-12345-09683';
-const sessionOpts = {
-    name: 'session-id',
-    secret: key,
-    saveUninitialized: false,
-    resave: false,
-    store: new FileStore()
-};
-app.use(session(sessionOpts));
+// Authentication Middleware
+app.use( passport.initialize());
 
-app.use(passport.initialize());
-app.use(passport.session());
-
-const authOpts = {
-    passthrough: [ '/users/login', '/users/signup', '/' ]
-};
-app.use(Auth(authOpts));
-
-// Mount routes
+// Mount Routes
 app.use('/',            index);
 app.use('/users',       users);
 app.use('/dishes',      dishRouter);
@@ -84,11 +71,9 @@ app.use(function(req, res, next) {
 
 // Error handler
 app.use(function(err, req, res, next) {
-  // Set locals, only providing error in development
   res.locals.message    = err.message;
   res.locals.error      = req.app.get('env') === 'development' ? err : {};
 
-  // Render the error page
   res.status(err.status || 500);
   res.render('error');
 });
