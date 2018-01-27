@@ -20,15 +20,27 @@ UserRouter.route('/signup')
 
         User.register(new User(newUsername), newPassword, (err, user) => {
             if (err) {
-                res.statusCode = 400;
-                res.setHeader('Content-Type', 'application/json');
-                return res.json({err: err});
+                return onError(err, res);
             }
 
-            return passport.authenticate('local')(req, res, () => {
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json({success: true, status: 'Registration Successful!'});
+            if (req.body.firstname) {
+                user.firstname = req.body.firstname;
+            }
+
+            if (req.body.lastname) {
+                user.lastname = req.body.lastname;
+            }
+
+            return user.save((err, user) => {
+                if (err) {
+                    return onError(err, res);
+                }
+
+                passport.authenticate('local')(req, res, () => {
+                    const respObj = {success: true, status: 'Registration Successful!'};
+
+                    return onSuccess(respObj, res);
+                });
             });
 
         });
@@ -38,11 +50,9 @@ UserRouter.route('/login')
     .post(passport.authenticate('local'), (req, res) => {
 
         const token = authenticate.getToken({_id: req.user._id});
+        const respObj = {success: true, status: "Login Successful", token: token};
 
-        res.statusCode = 200;
-        res.setHeader('Content-type', 'application/json');
-
-        return res.json({success: true, status: "Login Successful", token: token});
+        return onSuccess(respObj, res);
     });
 
 UserRouter.route('/logout')
@@ -53,5 +63,19 @@ UserRouter.route('/logout')
             return res.redirect('/');
         }
     });
+
+function onError (err, res) {
+    res.statusCode = 400;
+    res.setHeader('Content-Type', 'application/json');
+
+    res.json({err: err});
+}
+
+function onSuccess (respObj, res) {
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/json');
+
+    res.json(respObj);
+}
 
 module.exports = UserRouter;
