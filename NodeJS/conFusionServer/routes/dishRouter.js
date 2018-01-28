@@ -30,7 +30,6 @@ dishRouter.route('/')
     .post(authenticate.verifyUser, (req, res, next) => {
         Dishes.create(req.body)
             .then((dish) => {
-                console.log('Dish created');
                 res.statusCode = 200;
                 res.setHeader('Content-type', 'application/json');
                 res.json(dish);
@@ -75,7 +74,7 @@ dishRouter.route('/:dishId')
     })
 
     .put(authenticate.verifyUser, (req, res, next) => {
-        Dishes.findByIdAndUpdate(req.params.dishId, {$set: req.body, new: true})
+        Dishes.findByIdAndUpdate(req.params.dishId, {$set: req.body}, {new: true})
             .then((dish) => {
                 res.statusCode = 200;
                 res.setHeader('Content-type', 'application/json');
@@ -95,7 +94,6 @@ dishRouter.route('/:dishId')
             }, (err) => {next(err)})
             .catch((err) => {next(err)});
     });
-
 
 // Comments by dishes
 dishRouter.route('/:dishId/comments')
@@ -237,16 +235,18 @@ dishRouter.route('/:dishId/comments/:commentId')
 
 function checkDish (req, res, next, dish) {
     if (dish === null) {
-        const err = new Error('Dish ' + req.params.dishId + ' not found');
-        res.statusCode = 404;
+        const err       = new Error('Dish ' + req.params.dishId + ' not found');
+        res.statusCode  = 404;
+
         return next(err);
     }
 }
 
 function checkComment (req, res, next, comment) {
     if (comment === null) {
-        const err = new Error('Comment ' + req.params.commentId + ' not found');
-        res.statusCode = 404;
+        const err       = new Error('Comment ' + req.params.commentId + ' not found');
+        res.statusCode  = 404;
+
         return next(err);
     }
 }
