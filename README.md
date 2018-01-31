@@ -31,6 +31,7 @@ User authentication methods
 
 Backend as a Service (BaaS)
 
+- conFusionServer 
 
 ## Docker
 A Docker development environment with Node.js, MongoDB and all necessary Node modules is available.
