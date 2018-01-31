@@ -4,6 +4,7 @@ const express       = require('express');
 const bodyParser    = require('body-parser');
 const passport      = require('passport');
 const authenticate  = require('../middlewares/authenticate');
+const cors          = require('./cors');
 
 // Model
 const User = require('../models/users');
@@ -14,7 +15,7 @@ UserRouter.use(bodyParser.json());
 
 // Routes
 UserRouter.route('/signup')
-    .post((req, res, next) => {
+    .post(cors.corsWithOptions, (req, res, next) => {
         const newUsername = {username: req.body.username};
         const newPassword = req.body.password;
 
@@ -47,7 +48,7 @@ UserRouter.route('/signup')
     });
 
 UserRouter.route('/login')
-    .post(passport.authenticate('local'), (req, res) => {
+    .post(cors.corsWithOptions, passport.authenticate('local'), (req, res) => {
 
         const token = authenticate.getToken({_id: req.user._id});
         const respObj = {success: true, status: "Login Successful", token: token};
@@ -56,7 +57,7 @@ UserRouter.route('/login')
     });
 
 UserRouter.route('/logout')
-    .get((req, res, next) => {
+    .get(cors.corsWithOptions, (req, res, next) => {
         if (req.user) {
             res.clearCookie('session-id');
 

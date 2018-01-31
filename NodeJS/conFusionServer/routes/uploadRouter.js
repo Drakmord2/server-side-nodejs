@@ -4,6 +4,7 @@ const express       = require('express');
 const bodyParser    = require('body-parser');
 const authenticate  = require('../middlewares/authenticate');
 const multer        = require('multer');
+const cors          = require('./cors');
 
 // Multer settings
 const storageOpts = {
@@ -38,21 +39,21 @@ uploadRouter.use(bodyParser.json());
 
 // Routes
 uploadRouter.route('/')
-    .get(authenticate.verifyUser, (req, res, next) => {
+    .get(cors.cors, authenticate.verifyUser, (req, res, next) => {
         res.statusCode = 403;
         res.end('GET operation not supported on /upload.');
     })
-    .post(authenticate.verifyUser, upload.single('imageFile'),(req, res) => {
+    .post(cors.corsWithOptions, authenticate.verifyUser, upload.single('imageFile'),(req, res) => {
         res.statusCode = 200;
         res.setHeader('Content-type', 'application/json');
 
         res.json(req.file);
     })
-    .put(authenticate.verifyUser, (req, res, next) => {
+    .put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
         res.statusCode = 403;
         res.end('PUT operation not supported on /upload.');
     })
-    .delete(authenticate.verifyUser, (req, res, next) => {
+    .delete(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
         res.statusCode = 403;
         res.end('DELETE operation not supported on /upload.');
     });
