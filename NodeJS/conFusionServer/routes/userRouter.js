@@ -56,6 +56,16 @@ UserRouter.route('/login')
         return onSuccess(respObj, res);
     });
 
+UserRouter.route('/facebook/token')
+    .get(cors.corsWithOptions, passport.authenticate('facebook-token'), (req, res, next) => {
+        if (req.user) {
+            const token = authenticate.getToken({_id: req.user._id});
+            const respObj = {success: true, status: "Login Successful", token: token};
+
+            return onSuccess(respObj, res);
+        }
+    });
+
 UserRouter.route('/logout')
     .get(cors.corsWithOptions, (req, res, next) => {
         if (req.user) {
